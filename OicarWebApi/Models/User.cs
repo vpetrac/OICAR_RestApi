@@ -1,11 +1,22 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace OicarWebApi.Models
 {
-    public partial class AppUser
+    public class AppDbContext : DbContext
     {
-        public AppUser()
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+             : base(options)
+        {
+        }
+        public DbSet<User> AppUsers { get; set; }
+    }
+
+    public partial class User
+    {
+        public User()
         {
             ChatMessageReceivingUsers = new HashSet<ChatMessage>();
             ChatMessageSendingUsers = new HashSet<ChatMessage>();
@@ -18,6 +29,8 @@ namespace OicarWebApi.Models
             Suspensions = new HashSet<Suspension>();
         }
 
+
+        [Key]
         public int IdappUser { get; set; }
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;

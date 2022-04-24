@@ -11,7 +11,7 @@ namespace OicarWebApi.Models
         public int ReportReasonId { get; set; }
 
         public virtual ReportReason ReportReason { get; set; } = null!;
-        public virtual AppUser ReportedUser { get; set; } = null!;
-        public virtual AppUser ReportingUser { get; set; } = null!;
+        public virtual User ReportedUser { get; set; } = null!;
+        public virtual User ReportingUser { get; set; } = null!;
     }
 }

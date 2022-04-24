@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Text.Json.Serialization;
 
-namespace OicarWebApi.Models
+
+namespace OicarWebApi.Entities
 {
     public partial class ProjectPost
     {
@@ -17,7 +17,7 @@ namespace OicarWebApi.Models
         public int NumberOfTeammates { get; set; }
         public bool Deleted { get; set; }
 
-        public virtual User AppUser { get; set; } = null!;
-        public virtual Category Category { get; set; } = null!;
+        public User AppUser { get; set; } = null!;
+        public Category Category { get; set; } = null!;
     }
 }

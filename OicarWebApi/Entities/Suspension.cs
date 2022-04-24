@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Text.Json.Serialization;
 
-namespace OicarWebApi.Models
+
+namespace OicarWebApi.Entities
 {
     public partial class Suspension
     {
@@ -11,7 +11,7 @@ namespace OicarWebApi.Models
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 
-        public virtual User AppUser { get; set; } = null!;
-        public virtual ReportReason ReportReason { get; set; } = null!;
+        public User User { get; set; } = null!;
+        public ReportReason ReportReason { get; set; } = null!;
     }
 }

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Text.Json.Serialization;
 
-namespace OicarWebApi.Models
+
+namespace OicarWebApi.Entities
 {
-    public partial class ChatMessage
+    public class ChatMessage
     {
         public int IdchatMessage { get; set; }
         public int SendingUserId { get; set; }

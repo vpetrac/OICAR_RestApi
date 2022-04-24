@@ -20,7 +20,7 @@ namespace OicarWebApi.Models
         public DateTime DateOfCreation { get; set; }
         public bool Deleted { get; set; }
 
-        public virtual AppUser AppUser { get; set; } = null!;
+        public virtual User AppUser { get; set; } = null!;
         public virtual Category Category { get; set; } = null!;
         public virtual ICollection<ServicePostImage> ServicePostImages { get; set; }
     }

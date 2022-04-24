@@ -16,7 +16,7 @@ namespace OicarWebApi.Models
         {
         }
 
-        public virtual DbSet<AppUser> AppUsers { get; set; } = null!;
+        public virtual DbSet<User> AppUsers { get; set; } = null!;
         public virtual DbSet<Category> Categories { get; set; } = null!;
         public virtual DbSet<ChatMessage> ChatMessages { get; set; } = null!;
         public virtual DbSet<ProjectPost> ProjectPosts { get; set; } = null!;
@@ -38,7 +38,7 @@ namespace OicarWebApi.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<AppUser>(entity =>
+            modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.IdappUser);
 

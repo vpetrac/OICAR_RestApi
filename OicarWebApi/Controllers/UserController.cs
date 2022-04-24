@@ -6,7 +6,7 @@ namespace OicarWebApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AppUserController : ControllerBase
+    public class UserController : ControllerBase
     {
         // GET: api/<AppUserController>
         [HttpGet]
