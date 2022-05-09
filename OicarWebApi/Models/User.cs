@@ -5,14 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OicarWebApi.Models
 {
-    public class AppDbContext : DbContext
-    {
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-             : base(options)
-        {
-        }
-        public DbSet<User> AppUsers { get; set; }
-    }
+    
 
     public partial class User
     {

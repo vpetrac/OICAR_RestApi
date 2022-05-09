@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using OicarWebApi.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,36 +10,57 @@ namespace OicarWebApi.Controllers
     [ApiController]
     public class ReportController : ControllerBase
     {
+        private readonly OicarAppDatabaseContext _context = new OicarAppDatabaseContext();
+
         // GET: api/<ReportController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<List<ReportReason>> Get()
         {
-            return new string[] { "value1", "value2" };
+            var reportReasons = await _context.ReportReasons.ToListAsync();
+            return reportReasons;
+
         }
 
         // GET api/<ReportController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ReportReason> Get(int id)
         {
-            return "value";
+            var reportReason = await _context.ReportReasons.FindAsync(id);
+
+
+            return reportReason;
         }
 
         // POST api/<ReportController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post(ReportReason reportReason)
         {
+            await _context.ReportReasons.AddAsync(reportReason);
+            await _context.SaveChangesAsync();
+            return Created($"{reportReason.IdreportReason}", reportReason);
         }
 
         // PUT api/<ReportController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(ReportReason reportReason)
         {
+            _context.ReportReasons.Update(reportReason);
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
 
         // DELETE api/<ReportController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            var reportReason = await _context.ReportReasons.FindAsync(id);
+            if (reportReason == null)
+            {
+                return NotFound();
+            }
+            _context.ReportReasons.Remove(reportReason);
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
     }
 }

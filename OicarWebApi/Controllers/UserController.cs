@@ -1,43 +1,67 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OicarWebApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace OicarWebApi.Controllers
 {
+
     [ApiController]
     [Route("[controller]")]
     public class UserController : ControllerBase
     {
+        private readonly OicarAppDatabaseContext _context = new OicarAppDatabaseContext();
         // GET: api/<AppUserController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<List<User>> Get()
         {
-            return new string[] { "value1", "value2" };
+            var users = await _context.AppUsers.ToListAsync();
+            return users;
+
         }
 
         // GET api/<AppUserController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<User> Get(int id)
         {
-            return "value";
+            var user = await _context.AppUsers.FindAsync(id);
+
+            
+
+            return user;
         }
 
         // POST api/<AppUserController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post(User user)
         {
+            await _context.AppUsers.AddAsync(user);
+            await _context.SaveChangesAsync();
+            return Created($"{user.IdappUser}", user);
         }
 
         // PUT api/<AppUserController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(User user)
         {
+            _context.AppUsers.Update(user);
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
 
         // DELETE api/<AppUserController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            var userToDelete = await _context.AppUsers.FindAsync(id);
+            if (userToDelete == null)
+            {
+                return NotFound();
+            }
+            _context.AppUsers.Update(userToDelete);
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
     }
 }

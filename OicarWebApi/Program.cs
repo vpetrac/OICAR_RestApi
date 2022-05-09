@@ -1,8 +1,20 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using OicarWebApi.Controllers;
+using OicarWebApi.Models;
 using System.Configuration;
 
+
+
 var builder = WebApplication.CreateBuilder(args);
+string connString = builder.Configuration.GetConnectionString("cs");
+
+//builder.Services.AddScoped<UserController>();
+
+builder.Services.AddDbContext<OicarAppDatabaseContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("cs"));
+});
 
 // Add services to the container.
 

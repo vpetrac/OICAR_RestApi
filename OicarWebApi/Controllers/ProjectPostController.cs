@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using OicarWebApi.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,36 +10,66 @@ namespace OicarWebApi.Controllers
     [ApiController]
     public class ProjectPostController : ControllerBase
     {
+        private readonly OicarAppDatabaseContext _context = new OicarAppDatabaseContext();
+
         // GET: api/<ProjectPostController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<List<ProjectPost>> Get()
         {
-            return new string[] { "value1", "value2" };
+            var projectPosts = await _context.ProjectPosts.ToListAsync();
+            return projectPosts;
+
         }
 
         // GET api/<ProjectPostController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ProjectPost> Get(int id)
         {
-            return "value";
+            var projectPost = await _context.ProjectPosts.FindAsync(id);
+
+
+            return projectPost;
+        }
+
+        [HttpGet("{userId}")]
+        public async Task<List<ProjectPost>> GetForUser(int userId)
+        {
+            var projectPosts = await _context.ProjectPosts.Where(p => p.AppUserId == userId).ToListAsync();
+
+
+            return projectPosts;
         }
 
         // POST api/<ProjectPostController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post(ProjectPost projectPost)
         {
+            await _context.ProjectPosts.AddAsync(projectPost);
+            await _context.SaveChangesAsync();
+            return Created($"{projectPost.IdprojectPost}", projectPost);
         }
 
         // PUT api/<ProjectPostController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(ProjectPost projectPost)
         {
+            _context.ProjectPosts.Update(projectPost);
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
 
         // DELETE api/<ProjectPostController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            var projectPost = await _context.ProjectPosts.FindAsync(id);
+            if (projectPost == null)
+            {
+                return NotFound();
+            }
+            _context.ProjectPosts.Remove(projectPost);
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
     }
 }
