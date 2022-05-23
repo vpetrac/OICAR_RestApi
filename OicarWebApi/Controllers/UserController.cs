@@ -16,7 +16,7 @@ namespace OicarWebApi.Controllers
         [HttpGet]
         public async Task<List<User>> Get()
         {
-            var users = await _context.AppUsers.ToListAsync();
+            var users = await _context.AppUsers.FromSqlRaw($"readAppUsers").ToListAsync();
             return users;
 
         }
@@ -27,7 +27,6 @@ namespace OicarWebApi.Controllers
         {
             var user = await _context.AppUsers.FindAsync(id);
 
-            
 
             return user;
         }
@@ -36,6 +35,7 @@ namespace OicarWebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(User user)
         {
+            
             await _context.AppUsers.AddAsync(user);
             await _context.SaveChangesAsync();
             return Created($"{user.IdappUser}", user);

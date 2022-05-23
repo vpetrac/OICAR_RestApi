@@ -14,16 +14,19 @@ namespace OicarWebApi.Controllers
 
         // POST api/values
         [HttpPost]
-        public async Task<int> CheckLoginData(string email, string passwordHash)
+        public int CheckLoginData(string email, string passwordHash)
         {
-            if(_context.AppUsers.FirstAsync(u => u.Email == email && u.PasswordHash.ToString() == passwordHash) != null){
-                var user = await _context.AppUsers.FirstAsync(u => u.Email == email && u.PasswordHash.ToString() == passwordHash);
-                return user.IdappUser;
-            }
-            else
+
+            foreach (User user in _context.AppUsers)
             {
-                return StatusCodes.Status401Unauthorized;
+                string p = Convert.ToBase64String(user.PasswordHash);
+                if (user.Email == email && p == passwordHash) return user.IdappUser;
             }
+
+            return -1;   
+
+            
+            
         }
 
 
