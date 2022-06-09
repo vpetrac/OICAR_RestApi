@@ -31,14 +31,6 @@ namespace OicarWebApi.Controllers
             return projectPost;
         }
 
-        [HttpGet("{userId}")]
-        public async Task<List<ProjectPost>> GetForUser(int userId)
-        {
-            var projectPosts = await _context.ProjectPosts.Where(p => p.AppUserId == userId).ToListAsync();
-
-
-            return projectPosts;
-        }
 
         // POST api/<ProjectPostController>
         [HttpPost]
