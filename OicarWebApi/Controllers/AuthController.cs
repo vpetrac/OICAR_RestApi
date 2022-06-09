@@ -20,6 +20,8 @@ namespace OicarWebApi.Controllers
             foreach (User user in _context.AppUsers)
             {
                 string p = Convert.ToBase64String(user.PasswordHash);
+                char[] remList = { 'A', '='};
+                p = p.TrimEnd(remList);
                 if (user.Email == email && p == passwordHash) return user.IdappUser;
             }
 
