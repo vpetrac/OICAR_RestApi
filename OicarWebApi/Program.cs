@@ -8,6 +8,7 @@ using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 string connString = builder.Configuration.GetConnectionString("cs");
+string _corsPolicy = "CorsPolicy";
 
 //builder.Services.AddScoped<UserController>();
 
@@ -17,7 +18,15 @@ builder.Services.AddDbContext<OicarAppDatabaseContext>(options =>
 });
 
 // Add services to the container.
-
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy(name: _corsPolicy, builder =>
+    {
+        builder.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -35,6 +44,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(_corsPolicy);
 
 app.UseAuthorization();
 
