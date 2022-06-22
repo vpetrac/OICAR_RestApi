@@ -17,7 +17,7 @@ namespace OicarWebApi.Models
         public int NumberOfTeammates { get; set; }
         public bool Deleted { get; set; }
 
-        public virtual User AppUser { get; set; } = null!;
+        public virtual AppUser AppUser { get; set; } = null!;
         public virtual Category Category { get; set; } = null!;
     }
 }

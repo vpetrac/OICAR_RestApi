@@ -1,15 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace OicarWebApi.Models
 {
-    
-
-    public partial class User
+    public partial class AppUser
     {
-        public User()
+        public AppUser()
         {
             ChatMessageReceivingUsers = new HashSet<ChatMessage>();
             ChatMessageSendingUsers = new HashSet<ChatMessage>();
@@ -22,8 +19,6 @@ namespace OicarWebApi.Models
             Suspensions = new HashSet<Suspension>();
         }
 
-
-        [Key]
         public int IdappUser { get; set; }
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
@@ -31,8 +26,12 @@ namespace OicarWebApi.Models
         public byte[] PasswordHash { get; set; } = null!;
         public Guid Salt { get; set; }
         public bool Deleted { get; set; }
+        public int UserLevelId { get; set; }
 
+        public virtual UserLevel UserLevel { get; set; } = null!;
+        [JsonIgnore]
         public virtual ICollection<ChatMessage> ChatMessageReceivingUsers { get; set; }
+        [JsonIgnore]
         public virtual ICollection<ChatMessage> ChatMessageSendingUsers { get; set; }
         public virtual ICollection<ProjectPost> ProjectPosts { get; set; }
         public virtual ICollection<Report> ReportReportedUsers { get; set; }

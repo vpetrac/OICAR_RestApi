@@ -11,7 +11,7 @@ namespace OicarWebApi.Models
         public DateTime DateOfCreation { get; set; }
         public string Comment { get; set; } = null!;
 
-        public virtual User ReviewedUser { get; set; } = null!;
-        public virtual User ReviewingUser { get; set; } = null!;
+        public virtual AppUser ReviewedUser { get; set; } = null!;
+        public virtual AppUser ReviewingUser { get; set; } = null!;
     }
 }

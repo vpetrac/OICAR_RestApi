@@ -14,7 +14,7 @@ namespace OicarWebApi.Controllers
         private readonly OicarAppDatabaseContext _context = new OicarAppDatabaseContext();
 
         // GET: api/<ReviewController>
-        [HttpGet]
+        [HttpGet("GetForUser/{userId}")]
         public async Task<List<Review>> GetForUser(int userId)
         {
             var reviews = await _context.Reviews.Where(r => r.ReviewedUserId == userId).ToListAsync();

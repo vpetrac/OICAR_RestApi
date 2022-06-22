@@ -5,13 +5,13 @@ using OicarWebApi.Models;
 
 namespace OicarWebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class ServicePostController : ControllerBase
     {
         private readonly OicarAppDatabaseContext _context = new Models.OicarAppDatabaseContext();
 
-        // GET: api/<ProjectPostController>
+        // GET: api/<ProjeåctPostController>
         [HttpGet]
         public async Task<List<ServicePost>> Get()
         {

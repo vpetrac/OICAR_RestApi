@@ -17,7 +17,7 @@ namespace OicarWebApi.Controllers
         public int CheckLoginData(string email, string passwordHash)
         {
 
-            foreach (User user in _context.AppUsers)
+            foreach (AppUser user in _context.AppUsers)
             {
                 string p = Convert.ToBase64String(user.PasswordHash);
                 char[] remList = { 'A', '='};

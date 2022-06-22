@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace OicarWebApi.Models
 {
@@ -11,7 +12,9 @@ namespace OicarWebApi.Models
         public DateTime SentDateTime { get; set; }
         public string Content { get; set; } = null!;
 
-        public virtual User ReceivingUser { get; set; } = null!;
-        public virtual User SendingUser { get; set; } = null!;
+        [JsonIgnore]
+        public virtual AppUser ReceivingUser { get; set; } = null!;
+        [JsonIgnore]
+        public virtual AppUser SendingUser { get; set; } = null!;
     }
 }

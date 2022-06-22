@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace OicarWebApi.Models
 {
@@ -7,8 +8,9 @@ namespace OicarWebApi.Models
     {
         public int IdservicePostImage { get; set; }
         public int ServicePostId { get; set; }
-        public string FilePath { get; set; } = null!;
+        public byte[] Picture { get; set; } = null!;
 
+        [JsonIgnore]
         public virtual ServicePost ServicePost { get; set; } = null!;
     }
 }

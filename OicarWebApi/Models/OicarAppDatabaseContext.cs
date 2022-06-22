@@ -16,7 +16,7 @@ namespace OicarWebApi.Models
         {
         }
 
-        public virtual DbSet<User> AppUsers { get; set; } = null!;
+        public virtual DbSet<AppUser> AppUsers { get; set; } = null!;
         public virtual DbSet<Category> Categories { get; set; } = null!;
         public virtual DbSet<ChatMessage> ChatMessages { get; set; } = null!;
         public virtual DbSet<ProjectPost> ProjectPosts { get; set; } = null!;
@@ -26,18 +26,20 @@ namespace OicarWebApi.Models
         public virtual DbSet<ServicePost> ServicePosts { get; set; } = null!;
         public virtual DbSet<ServicePostImage> ServicePostImages { get; set; } = null!;
         public virtual DbSet<Suspension> Suspensions { get; set; } = null!;
+        public virtual DbSet<UserLevel> UserLevels { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Data Source=sql.bsite.net\MSSQL2016;Initial Catalog=ved99_oicar;User ID=ved99_oicar;Password=Oicar2022Algebra;Persist Security Info=True;");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Data Source=sql.bsite.net\\MSSQL2016;Initial Catalog=ved99_oicar;User ID=ved99_oicar;Password=Oicar2022Algebra;Persist Security Info=True;");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>(entity =>
+            modelBuilder.Entity<AppUser>(entity =>
             {
                 entity.HasKey(e => e.IdappUser);
 
@@ -57,6 +59,16 @@ namespace OicarWebApi.Models
                 entity.Property(e => e.PasswordHash)
                     .HasMaxLength(64)
                     .IsFixedLength();
+
+                entity.Property(e => e.UserLevelId)
+                    .HasColumnName("UserLevelID")
+                    .HasDefaultValueSql("((1))");
+
+                entity.HasOne(d => d.UserLevel)
+                    .WithMany(p => p.AppUsers)
+                    .HasForeignKey(d => d.UserLevelId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_AppUser_UserLevel");
             });
 
             modelBuilder.Entity<Category>(entity =>
@@ -260,8 +272,6 @@ namespace OicarWebApi.Models
 
                 entity.Property(e => e.IdservicePostImage).HasColumnName("IDServicePostImage");
 
-                entity.Property(e => e.FilePath).HasMaxLength(200);
-
                 entity.Property(e => e.ServicePostId).HasColumnName("ServicePostID");
 
                 entity.HasOne(d => d.ServicePost)
@@ -298,6 +308,20 @@ namespace OicarWebApi.Models
                     .HasForeignKey(d => d.ReportReasonId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Suspension_ReportReason");
+            });
+
+            modelBuilder.Entity<UserLevel>(entity =>
+            {
+                entity.HasKey(e => e.IduserLevel);
+
+                entity.ToTable("UserLevel");
+
+                entity.HasIndex(e => e.Title, "UQ_UserLevel_Title")
+                    .IsUnique();
+
+                entity.Property(e => e.IduserLevel).HasColumnName("IDUserLevel");
+
+                entity.Property(e => e.Title).HasMaxLength(50);
             });
 
             OnModelCreatingPartial(modelBuilder);
