@@ -10,44 +10,44 @@ using OicarWebApi.Models;
 
 namespace OicarWebApi.Controllers
 {
-    [Route("api/[controller]")]
-    public class ReportController : ControllerBase
+    [Route("[controller]")]
+    public class UserLevelController : ControllerBase
     {
         private readonly OicarAppDatabaseContext _context = new OicarAppDatabaseContext();
 
         // GET: api/<ReportReasonController>
         [HttpGet]
-        public async Task<List<Report>> Get()
+        public async Task<List<UserLevel>> Get()
         {
-            var report = await _context.Reports.ToListAsync();
-            return report;
+            var userLevels = await _context.UserLevels.ToListAsync();
+            return userLevels;
 
         }
 
         // GET api/<ReportController>/5
         [HttpGet("{id}")]
-        public async Task<Report> Get(int id)
+        public async Task<UserLevel> Get(int id)
         {
-            var report = await _context.Reports.FindAsync(id);
+            var userLevel = await _context.UserLevels.FindAsync(id);
 
 
-            return report;
+            return userLevel;
         }
 
         // POST api/<ReportController>
         [HttpPost]
-        public async Task<IActionResult> Post(Report report)
+        public async Task<IActionResult> Post(UserLevel userLevel)
         {
-            await _context.Reports.AddAsync(report);
+            await _context.UserLevels.AddAsync(userLevel);
             await _context.SaveChangesAsync();
-            return Created($"{report.Idreport}", report);
+            return Created($"{userLevel.IduserLevel}", userLevel);
         }
 
         // PUT api/<ReportController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(Report report)
+        public async Task<IActionResult> Put(UserLevel userLevel)
         {
-            _context.Reports.Update(report);
+            _context.UserLevels.Update(userLevel);
             await _context.SaveChangesAsync();
             return NoContent();
         }
@@ -56,12 +56,12 @@ namespace OicarWebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var report = await _context.Reports.FindAsync(id);
-            if (report == null)
+            var userLevel = await _context.UserLevels.FindAsync(id);
+            if (userLevel == null)
             {
                 return NotFound();
             }
-            _context.Reports.Remove(report);
+            _context.UserLevels.Remove(userLevel);
             await _context.SaveChangesAsync();
             return NoContent();
         }

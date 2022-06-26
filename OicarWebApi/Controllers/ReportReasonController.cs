@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OicarWebApi.Models;
 
@@ -10,44 +6,45 @@ using OicarWebApi.Models;
 
 namespace OicarWebApi.Controllers
 {
-    [Route("api/[controller]")]
-    public class ReportController : ControllerBase
+    [Route("[controller]")]
+    [ApiController]
+    public class ReportReasonController : ControllerBase
     {
         private readonly OicarAppDatabaseContext _context = new OicarAppDatabaseContext();
 
         // GET: api/<ReportReasonController>
         [HttpGet]
-        public async Task<List<Report>> Get()
+        public async Task<List<ReportReason>> Get()
         {
-            var report = await _context.Reports.ToListAsync();
-            return report;
+            var reportReasons = await _context.ReportReasons.ToListAsync();
+            return reportReasons;
 
         }
 
         // GET api/<ReportController>/5
         [HttpGet("{id}")]
-        public async Task<Report> Get(int id)
+        public async Task<ReportReason> Get(int id)
         {
-            var report = await _context.Reports.FindAsync(id);
+            var reportReason = await _context.ReportReasons.FindAsync(id);
 
 
-            return report;
+            return reportReason;
         }
 
         // POST api/<ReportController>
         [HttpPost]
-        public async Task<IActionResult> Post(Report report)
+        public async Task<IActionResult> Post(ReportReason reportReason)
         {
-            await _context.Reports.AddAsync(report);
+            await _context.ReportReasons.AddAsync(reportReason);
             await _context.SaveChangesAsync();
-            return Created($"{report.Idreport}", report);
+            return Created($"{reportReason.IdreportReason}", reportReason);
         }
 
         // PUT api/<ReportController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(Report report)
+        public async Task<IActionResult> Put(ReportReason reportReason)
         {
-            _context.Reports.Update(report);
+            _context.ReportReasons.Update(reportReason);
             await _context.SaveChangesAsync();
             return NoContent();
         }
@@ -56,15 +53,14 @@ namespace OicarWebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var report = await _context.Reports.FindAsync(id);
-            if (report == null)
+            var reportReason = await _context.ReportReasons.FindAsync(id);
+            if (reportReason == null)
             {
                 return NotFound();
             }
-            _context.Reports.Remove(report);
+            _context.ReportReasons.Remove(reportReason);
             await _context.SaveChangesAsync();
             return NoContent();
         }
     }
 }
-

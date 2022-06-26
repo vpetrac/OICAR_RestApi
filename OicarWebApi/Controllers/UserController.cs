@@ -59,6 +59,7 @@ namespace OicarWebApi.Controllers
             {
                 return NotFound();
             }
+            userToDelete.Deleted = true;
             _context.AppUsers.Update(userToDelete);
             await _context.SaveChangesAsync();
             return NoContent();

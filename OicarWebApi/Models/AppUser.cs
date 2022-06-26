@@ -28,17 +28,25 @@ namespace OicarWebApi.Models
         public bool Deleted { get; set; }
         public int UserLevelId { get; set; }
 
+        [JsonIgnore]
         public virtual UserLevel UserLevel { get; set; } = null!;
         [JsonIgnore]
         public virtual ICollection<ChatMessage> ChatMessageReceivingUsers { get; set; }
         [JsonIgnore]
         public virtual ICollection<ChatMessage> ChatMessageSendingUsers { get; set; }
+        [JsonIgnore]
         public virtual ICollection<ProjectPost> ProjectPosts { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Report> ReportReportedUsers { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Report> ReportReportingUsers { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Review> ReviewReviewedUsers { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Review> ReviewReviewingUsers { get; set; }
+        [JsonIgnore]
         public virtual ICollection<ServicePost> ServicePosts { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Suspension> Suspensions { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace OicarWebApi.Models
 {
@@ -10,8 +11,11 @@ namespace OicarWebApi.Models
         public int ReportedUserId { get; set; }
         public int ReportReasonId { get; set; }
 
+        [JsonIgnore]
         public virtual ReportReason ReportReason { get; set; } = null!;
+        [JsonIgnore]
         public virtual AppUser ReportedUser { get; set; } = null!;
+        [JsonIgnore]
         public virtual AppUser ReportingUser { get; set; } = null!;
     }
 }

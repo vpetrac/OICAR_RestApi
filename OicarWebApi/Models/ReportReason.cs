@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace OicarWebApi.Models
 {
@@ -14,7 +15,9 @@ namespace OicarWebApi.Models
         public int IdreportReason { get; set; }
         public string Title { get; set; } = null!;
 
+        [JsonIgnore]
         public virtual ICollection<Report> Reports { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Suspension> Suspensions { get; set; }
     }
 }
