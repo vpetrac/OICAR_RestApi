@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace OicarWebApi.Models
 {
@@ -17,7 +18,9 @@ namespace OicarWebApi.Models
         public int NumberOfTeammates { get; set; }
         public bool Deleted { get; set; }
 
+        [JsonIgnore]
         public virtual AppUser AppUser { get; set; } = null!;
+        [JsonIgnore]
         public virtual Category Category { get; set; } = null!;
     }
 }
