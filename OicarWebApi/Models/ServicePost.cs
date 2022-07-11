@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace OicarWebApi.Models
 {
@@ -9,7 +10,7 @@ namespace OicarWebApi.Models
         {
             ServicePostImages = new HashSet<ServicePostImage>();
         }
-
+        [Key]
         public int IdservicePost { get; set; }
         public int AppUserId { get; set; }
         public int CategoryId { get; set; }

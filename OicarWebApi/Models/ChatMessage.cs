@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace OicarWebApi.Models
 {
     public partial class ChatMessage
     {
+        [Key]
         public int IdchatMessage { get; set; }
         public int SendingUserId { get; set; }
         public int ReceivingUserId { get; set; }

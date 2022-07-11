@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace OicarWebApi.Models
 {
     public partial class Report
     {
+        [Key]
         public int Idreport { get; set; }
         public int ReportingUserId { get; set; }
         public int ReportedUserId { get; set; }

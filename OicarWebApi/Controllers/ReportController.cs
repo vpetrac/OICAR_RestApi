@@ -10,60 +10,114 @@ using OicarWebApi.Models;
 
 namespace OicarWebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class ReportController : ControllerBase
     {
         private readonly OicarAppDatabaseContext _context = new OicarAppDatabaseContext();
 
         // GET: api/<ReportReasonController>
         [HttpGet]
-        public async Task<List<Report>> Get()
+        public async Task<ActionResult<IEnumerable<Report>>> Get()
         {
-            var report = await _context.Reports.ToListAsync();
-            return report;
+            try
+            {
+                var report = await _context.Reports.ToListAsync();
+                return report;
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
+            
 
         }
 
         // GET api/<ReportController>/5
         [HttpGet("{id}")]
-        public async Task<Report> Get(int id)
+        public async Task<ActionResult<Report>> Get(int id)
         {
-            var report = await _context.Reports.FindAsync(id);
+            try
+            {
+                var report = await _context.Reports.FindAsync(id);
+                if (report == null)
+                {
+                    return NotFound();
+                }
 
-
-            return report;
+                return report;
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
+            
         }
 
         // POST api/<ReportController>
         [HttpPost]
         public async Task<IActionResult> Post(Report report)
         {
-            await _context.Reports.AddAsync(report);
-            await _context.SaveChangesAsync();
-            return Created($"{report.Idreport}", report);
+            try
+            {
+                await _context.Reports.AddAsync(report);
+                await _context.SaveChangesAsync();
+                return Created($"{report.Idreport}", report);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error creating new record");
+            }
         }
 
         // PUT api/<ReportController>/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(Report report)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Put(int id, Report report)
         {
-            _context.Reports.Update(report);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            try
+            {
+                if (id != report.Idreport)
+                    return BadRequest("Report ID mismatch");
+
+                var reportToUpdate = await _context.Reports.FindAsync(id);
+
+                if (reportToUpdate == null)
+                    return NotFound($"Report with Id = {id} not found");
+
+                _context.Reports.Update(report);
+                await _context.SaveChangesAsync();
+                return NoContent();
+
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error updating data");
+            }
         }
 
         // DELETE api/<ReportController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var report = await _context.Reports.FindAsync(id);
-            if (report == null)
+            try
             {
-                return NotFound();
+                var report = await _context.Reports.FindAsync(id);
+                if (report == null)
+                {
+                    return NotFound();
+                }
+                _context.Reports.Remove(report);
+                await _context.SaveChangesAsync();
+                return NoContent();
             }
-            _context.Reports.Remove(report);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error deleting data");
+            }
         }
     }
 }

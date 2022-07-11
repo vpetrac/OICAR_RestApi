@@ -14,21 +14,37 @@ namespace OicarWebApi.Controllers
 
         // GET: api/<CategoryController>
         [HttpGet]
-        public async Task<List<Category>> Get()
+        public async Task<ActionResult<IEnumerable<Category>>> Get()
         {
-            var categories = await _context.Categories.ToListAsync();
-            return categories;
 
+            try
+            {
+                return await _context.Categories.ToListAsync();
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
         }
 
         // GET api/<CategoryController>/5
         [HttpGet("{id}")]
-        public async Task<Category> Get(int id)
+        public async Task<ActionResult<Category>> Get(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
+            try
+            {
+                var category = await _context.Categories.FindAsync(id);
+                if (category == null) return NotFound();
 
-
-            return category;
+                return category;
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
+            
         }
 
         // POST api/<CategoryController>

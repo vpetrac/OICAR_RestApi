@@ -14,6 +14,7 @@ namespace OicarWebApi.Controllers
         [HttpGet("UsersPosts/{userId}")]
         public async Task<List<ProjectPost>> GetForUser(int userId)
         {
+
             var projectPosts = await _context.ProjectPosts.Where(p => p.AppUserId == userId).ToListAsync();
 
 

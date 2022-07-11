@@ -23,10 +23,14 @@ namespace OicarWebApi.Controllers
 
         // GET api/<ProjectPostController>/5
         [HttpGet("{id}")]
-        public async Task<ProjectPost> Get(int id)
+        public async Task<ActionResult<ProjectPost>> Get(int id)
         {
             var projectPost = await _context.ProjectPosts.FindAsync(id);
 
+            if(projectPost == null)
+            {
+                return NotFound();
+            }
 
             return projectPost;
         }
@@ -36,32 +40,65 @@ namespace OicarWebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(ProjectPost projectPost)
         {
-            await _context.ProjectPosts.AddAsync(projectPost);
-            await _context.SaveChangesAsync();
-            return Created($"{projectPost.IdprojectPost}", projectPost);
+            try
+            {
+                await _context.ProjectPosts.AddAsync(projectPost);
+                await _context.SaveChangesAsync();
+                return Created($"{projectPost.IdprojectPost}", projectPost);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error creating new record");
+            }
         }
 
         // PUT api/<ProjectPostController>/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(ProjectPost projectPost)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Put(int id,ProjectPost projectPost)
         {
-            _context.ProjectPosts.Update(projectPost);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            try
+            {
+                if (id != projectPost.IdprojectPost)
+                    return BadRequest("Project Post ID mismatch or missing. Check if JSON contains ProjectPost Primary Key");
+
+                _context.ProjectPosts.Update(projectPost);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error updating data");
+            }
+
+            
+
+
         }
 
         // DELETE api/<ProjectPostController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var projectPost = await _context.ProjectPosts.FindAsync(id);
-            if (projectPost == null)
+            try
             {
-                return NotFound();
+                var projectPost = await _context.ProjectPosts.FindAsync(id);
+                if (projectPost == null)
+                {
+                    return NotFound();
+                }
+                projectPost.Deleted = true;
+                _context.ProjectPosts.Update(projectPost);
+                await _context.SaveChangesAsync();
+                return NoContent();
             }
-            _context.ProjectPosts.Remove(projectPost);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error deleting data");
+            }
+
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace OicarWebApi.Models
@@ -18,7 +19,7 @@ namespace OicarWebApi.Models
             ServicePosts = new HashSet<ServicePost>();
             Suspensions = new HashSet<Suspension>();
         }
-
+        [Key]
         public int IdappUser { get; set; }
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;

@@ -14,21 +14,37 @@ namespace OicarWebApi.Controllers
         private readonly OicarAppDatabaseContext _context = new OicarAppDatabaseContext();
         // GET: api/<AppUserController>
         [HttpGet]
-        public async Task<List<AppUser>> Get()
+        public async Task<ActionResult<IEnumerable<AppUser>>> Get()
         {
-            var users = await _context.AppUsers.FromSqlRaw($"readAppUsers").ToListAsync();
-            return users;
+            try
+            {
+                return await _context.AppUsers.FromSqlRaw($"readAppUsers").ToListAsync();
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
 
         }
 
         // GET api/<AppUserController>/5
         [HttpGet("{id}")]
-        public async Task<AppUser> Get(int id)
+        public async Task<ActionResult<AppUser>> Get(int id)
         {
-            var user = await _context.AppUsers.FindAsync(id);
+            try
+            {
+                var user = await _context.AppUsers.FindAsync(id);
 
+                if (user == null) return NotFound();
 
-            return user;
+                return user;
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
         }
 
         // POST api/<AppUserController>
@@ -36,33 +52,65 @@ namespace OicarWebApi.Controllers
         public async Task<IActionResult> Post(AppUser user)
         {
             
-            await _context.AppUsers.AddAsync(user);
-            await _context.SaveChangesAsync();
-            return Created($"{user.IdappUser}", user);
+            try
+            {
+                await _context.AppUsers.AddAsync(user);
+                await _context.SaveChangesAsync();
+                return Created($"{user.IdappUser}", user);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error creating new record");
+            }
         }
 
         // PUT api/<AppUserController>/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(AppUser user)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Put(int id,AppUser user)
         {
-            _context.AppUsers.Update(user);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            try
+            {
+                if (id != user.IdappUser)
+                    return BadRequest("AppUser ID mismatch");
+
+                var userToUpdate = await _context.ServicePosts.FindAsync(id);
+
+                if (userToUpdate == null)
+                    return NotFound($"User with Id = {id} not found");
+
+                _context.AppUsers.Update(user);
+                await _context.SaveChangesAsync();
+                return NoContent();
+
+            }
+            catch (Exception)
+            {
+                return BadRequest("AppUser ID mismatch or missing. Check if JSON contains ProjectPost Primary Key");
+            }
         }
 
         // DELETE api/<AppUserController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var userToDelete = await _context.AppUsers.FindAsync(id);
-            if (userToDelete == null)
+            try
             {
-                return NotFound();
+                var userToDelete = await _context.AppUsers.FindAsync(id);
+                if (userToDelete == null)
+                {
+                    return NotFound();
+                }
+                userToDelete.Deleted = true;
+                _context.AppUsers.Update(userToDelete);
+                await _context.SaveChangesAsync();
+                return NoContent();
             }
-            userToDelete.Deleted = true;
-            _context.AppUsers.Update(userToDelete);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error deleting data");
+            }
         }
     }
 }

@@ -13,54 +13,102 @@ namespace OicarWebApi.Controllers
 
         // GET: api/<ProjeåctPostController>
         [HttpGet]
-        public async Task<List<ServicePost>> Get()
+        public async Task<ActionResult<IEnumerable<ServicePost>>> Get()
         {
-            var servicePosts = await _context.ServicePosts.ToListAsync();
-            return servicePosts;
-
+            try
+            {
+                return await _context.ServicePosts.ToListAsync();
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
         }
 
         // GET api/<ProjectPostController>/5
         [HttpGet("{id}")]
-        public async Task<ServicePost> Get(int id)
+        public async Task<ActionResult<ServicePost>> Get(int id)
         {
-            var servicePosts = await _context.ServicePosts.FindAsync(id);
+            try
+            {
+                var servicePosts = await _context.ServicePosts.FindAsync(id);
 
+                if (servicePosts == null) return NotFound();
 
-            return servicePosts;
+                return servicePosts;
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
         }
 
 
         // POST api/<ProjectPostController>
         [HttpPost]
         public async Task<IActionResult> Post(ServicePost servicePosts)
-        {
-            await _context.ServicePosts.AddAsync(servicePosts);
-            await _context.SaveChangesAsync();
-            return Created($"{servicePosts.IdservicePost}", servicePosts);
+        { 
+            try
+            {
+                await _context.ServicePosts.AddAsync(servicePosts);
+                await _context.SaveChangesAsync();
+                return Created($"{servicePosts.IdservicePost}", servicePosts);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error creating new record");
+            }
         }
 
         // PUT api/<ProjectPostController>/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(ServicePost servicePosts)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Put(int id,ServicePost servicePosts)
         {
-            _context.ServicePosts.Update(servicePosts);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            try
+            {
+                if (id != servicePosts.IdservicePost)
+                    return BadRequest("ServicePost ID mismatch");
+
+                var servicePostToUpdate = await _context.ServicePosts.FindAsync(id);
+
+                if (servicePostToUpdate == null)
+                    return NotFound($"ServicePost with Id = {id} not found");
+
+                _context.ServicePosts.Update(servicePosts);
+                await _context.SaveChangesAsync();
+                return NoContent();
+
+            }
+            catch (Exception)
+            {
+                return BadRequest("Service Post ID mismatch or missing. Check if JSON contains ProjectPost Primary Key");
+            }
         }
 
         // DELETE api/<ProjectPostController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var servicePosts = await _context.ServicePosts.FindAsync(id);
-            if (servicePosts == null)
+            try
             {
-                return NotFound();
+                var servicePost = await _context.ServicePosts.FindAsync(id);
+                if (servicePost == null)
+                {
+                    return NotFound();
+                }
+                servicePost.Deleted = true;
+                _context.ServicePosts.Update(servicePost);
+                await _context.SaveChangesAsync();
+                return NoContent();
             }
-            _context.ServicePosts.Remove(servicePosts);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error deleting data");
+            }
         }
     }
 }

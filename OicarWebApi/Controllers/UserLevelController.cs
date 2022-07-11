@@ -17,53 +17,108 @@ namespace OicarWebApi.Controllers
 
         // GET: api/<ReportReasonController>
         [HttpGet]
-        public async Task<List<UserLevel>> Get()
+        public async Task<ActionResult<IEnumerable<UserLevel>>> Get()
         {
-            var userLevels = await _context.UserLevels.ToListAsync();
-            return userLevels;
+        
+            try
+            {
+                return await _context.UserLevels.ToListAsync();
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
 
         }
 
         // GET api/<ReportController>/5
         [HttpGet("{id}")]
-        public async Task<UserLevel> Get(int id)
+        public async Task<ActionResult<UserLevel>> Get(int id)
         {
-            var userLevel = await _context.UserLevels.FindAsync(id);
+            try
+            {
+                var userLevel = await _context.UserLevels.FindAsync(id);
 
+                if (userLevel == null) return NotFound();
 
-            return userLevel;
+                return userLevel;
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
         }
 
         // POST api/<ReportController>
         [HttpPost]
         public async Task<IActionResult> Post(UserLevel userLevel)
         {
-            await _context.UserLevels.AddAsync(userLevel);
-            await _context.SaveChangesAsync();
-            return Created($"{userLevel.IduserLevel}", userLevel);
+            
+            try
+            {
+                await _context.UserLevels.AddAsync(userLevel);
+                await _context.SaveChangesAsync();
+                return Created($"{userLevel.IduserLevel}", userLevel);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error creating new record");
+            }
         }
 
         // PUT api/<ReportController>/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(UserLevel userLevel)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Put(int id, UserLevel userLevel)
         {
-            _context.UserLevels.Update(userLevel);
-            await _context.SaveChangesAsync();
-            return NoContent();
+
+            try
+            {
+                if (id != userLevel.IduserLevel)
+                    return BadRequest("UserLevel ID mismatch");
+
+                var userLevelToUpdate = await _context.UserLevels.FindAsync(id);
+
+                if (userLevelToUpdate == null)
+                    return NotFound($"UserLevel with Id = {id} not found");
+
+                _context.UserLevels.Update(userLevel);
+                await _context.SaveChangesAsync();
+                return NoContent();
+
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error updating data");
+            }
+
+
         }
 
         // DELETE api/<ReportController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var userLevel = await _context.UserLevels.FindAsync(id);
-            if (userLevel == null)
+
+            try
             {
-                return NotFound();
+                var userLevel = await _context.UserLevels.FindAsync(id);
+                if (userLevel == null)
+                {
+                    return NotFound();
+                }
+                _context.UserLevels.Remove(userLevel);
+                await _context.SaveChangesAsync();
+                return NoContent();
             }
-            _context.UserLevels.Remove(userLevel);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error deleting data");
+            }
         }
     }
 }

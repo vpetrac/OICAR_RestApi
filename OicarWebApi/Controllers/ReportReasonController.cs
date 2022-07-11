@@ -23,10 +23,14 @@ namespace OicarWebApi.Controllers
 
         // GET api/<ReportController>/5
         [HttpGet("{id}")]
-        public async Task<ReportReason> Get(int id)
+        public async Task<ActionResult<ReportReason>> Get(int id)
         {
             var reportReason = await _context.ReportReasons.FindAsync(id);
 
+            if(reportReason == null)
+            {
+                return NotFound();
+            }
 
             return reportReason;
         }
@@ -41,12 +45,29 @@ namespace OicarWebApi.Controllers
         }
 
         // PUT api/<ReportController>/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(ReportReason reportReason)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Put(int id, ReportReason reportReason)
         {
-            _context.ReportReasons.Update(reportReason);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            try
+            {
+                if (id != reportReason.IdreportReason)
+                    return BadRequest("ReportReason ID mismatch");
+
+                var reportReasonToUpdate = await _context.ReportReasons.FindAsync(id);
+
+                if (reportReasonToUpdate == null)
+                    return NotFound($"ReportReason with Id = {id} not found");
+
+                _context.ReportReasons.Update(reportReason);
+                await _context.SaveChangesAsync();
+                return NoContent();
+
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error updating data");
+            }
         }
 
         // DELETE api/<ReportController>/5

@@ -24,44 +24,87 @@ namespace OicarWebApi.Controllers
 
         // GET api/<ReviewController>/5
         [HttpGet("{id}")]
-        public async Task<Review> Get(int id)
+        public async Task<ActionResult<Review>> Get(int id)
         {
-            var review = await _context.Reviews.FindAsync(id);
+            try
+            {
+                var review = await _context.Reviews.FindAsync(id);
 
+                if (review == null) return NotFound();
 
-            return review;
+                return review;
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
         }
 
         // POST api/<ReviewController>
         [HttpPost]
         public async Task<IActionResult> Post(Review review)
         {
-            await _context.Reviews.AddAsync(review);
-            await _context.SaveChangesAsync();
-            return Created($"{review.Idreview}", review);
+            try
+            {
+                await _context.Reviews.AddAsync(review);
+                await _context.SaveChangesAsync();
+                return Created($"{review.Idreview}", review);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error creating new record");
+            }
         }
 
         // PUT api/<ReviewController>/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(Review review)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Put(int id,Review review)
         {
-            _context.Reviews.Update(review);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            try
+            {
+                if (id != review.Idreview)
+                    return BadRequest("Review ID mismatch");
+
+                var reviewToUpdate = await _context.Reviews.FindAsync(id);
+
+                if (reviewToUpdate == null)
+                    return NotFound($"Review with Id = {id} not found");
+
+                _context.Reviews.Update(review);
+                await _context.SaveChangesAsync();
+                return NoContent();
+
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error updating data");
+            }
         }
 
         // DELETE api/<ReviewController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var review = await _context.Reviews.FindAsync(id);
-            if (review == null)
+            try
             {
-                return NotFound();
+                var review = await _context.Reviews.FindAsync(id);
+                if (review == null)
+                {
+                    return NotFound();
+                }
+                _context.Reviews.Remove(review);
+                await _context.SaveChangesAsync();
+                return NoContent();
             }
-            _context.Reviews.Remove(review);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error deleting data");
+            }
+
         }
     }
 }
