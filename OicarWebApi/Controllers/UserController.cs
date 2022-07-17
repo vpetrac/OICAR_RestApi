@@ -74,7 +74,7 @@ namespace OicarWebApi.Controllers
                 if (id != user.IdappUser)
                     return BadRequest("AppUser ID mismatch");
 
-                var userToUpdate = await _context.ServicePosts.FindAsync(id);
+                var userToUpdate = await _context.AppUsers.FindAsync(id);
 
                 if (userToUpdate == null)
                     return NotFound($"User with Id = {id} not found");
