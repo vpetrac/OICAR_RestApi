@@ -3,11 +3,7 @@ namespace OicarWebApi.Repository
 {
 	public interface IUserRepository
 	{
-        public Task<int> CreateUser(
-            string firstName,
-            string lastName,
-            string email,
-            byte passwordHash);
+        public Task<int> CreateUser();
 
         public Task<int> GetUser(int id);
 

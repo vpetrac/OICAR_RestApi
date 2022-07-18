@@ -86,7 +86,7 @@ namespace OicarWebApi.Controllers
             }
             catch (Exception)
             {
-                return BadRequest("AppUser ID mismatch or missing. Check if JSON contains ProjectPost Primary Key");
+                return BadRequest("AppUser ID mismatch or missing. Check if JSON contains User Primary Key");
             }
         }
 
