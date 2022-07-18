@@ -71,12 +71,12 @@ namespace OicarWebApi.Controllers
             {
                 if (id != servicePosts.IdservicePost)
                     return BadRequest("ServicePost ID mismatch");
-
+                /*
                 var servicePostToUpdate = await _context.ServicePosts.FindAsync(id);
 
                 if (servicePostToUpdate == null)
                     return NotFound($"ServicePost with Id = {id} not found");
-
+                */
                 _context.ServicePosts.Update(servicePosts);
                 await _context.SaveChangesAsync();
                 return NoContent();

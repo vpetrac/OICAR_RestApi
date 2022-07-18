@@ -11,6 +11,7 @@ using OicarWebApi.Models;
 namespace OicarWebApi.Controllers
 {
     [Route("[controller]")]
+    [ApiController]
     public class ReportController : ControllerBase
     {
         private readonly OicarAppDatabaseContext _context = new OicarAppDatabaseContext();
@@ -80,12 +81,12 @@ namespace OicarWebApi.Controllers
             {
                 if (id != report.Idreport)
                     return BadRequest("Report ID mismatch");
-
+                /*
                 var reportToUpdate = await _context.Reports.FindAsync(id);
 
                 if (reportToUpdate == null)
                     return NotFound($"Report with Id = {id} not found");
-
+                */
                 _context.Reports.Update(report);
                 await _context.SaveChangesAsync();
                 return NoContent();

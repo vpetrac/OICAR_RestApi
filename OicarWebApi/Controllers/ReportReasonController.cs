@@ -50,14 +50,15 @@ namespace OicarWebApi.Controllers
         {
             try
             {
+                /*
                 if (id != reportReason.IdreportReason)
                     return BadRequest("ReportReason ID mismatch");
 
                 var reportReasonToUpdate = await _context.ReportReasons.FindAsync(id);
-
+                
                 if (reportReasonToUpdate == null)
                     return NotFound($"ReportReason with Id = {id} not found");
-
+                */
                 _context.ReportReasons.Update(reportReason);
                 await _context.SaveChangesAsync();
                 return NoContent();

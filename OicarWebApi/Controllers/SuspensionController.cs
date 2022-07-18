@@ -72,12 +72,12 @@ namespace OicarWebApi.Controllers
             {
                 if (id != suspension.Idsuspension)
                     return BadRequest("Suspension ID mismatch");
-
+                /*
                 var suspensionToUpdate = await _context.Suspensions.FindAsync(id);
 
                 if (suspensionToUpdate == null)
                     return NotFound($"Suspension with Id = {id} not found");
-
+                */
                 _context.Suspensions.Update(suspension);
                 await _context.SaveChangesAsync();
                 return NoContent();

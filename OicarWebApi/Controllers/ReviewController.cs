@@ -66,12 +66,12 @@ namespace OicarWebApi.Controllers
             {
                 if (id != review.Idreview)
                     return BadRequest("Review ID mismatch");
-
+                /*
                 var reviewToUpdate = await _context.Reviews.FindAsync(id);
 
                 if (reviewToUpdate == null)
                     return NotFound($"Review with Id = {id} not found");
-
+                */
                 _context.Reviews.Update(review);
                 await _context.SaveChangesAsync();
                 return NoContent();

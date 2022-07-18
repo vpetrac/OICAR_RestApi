@@ -59,6 +59,7 @@ namespace OicarWebApi.Controllers
         {
             try
             {
+
                 if (id != projectPost.IdprojectPost)
                     return BadRequest("Project Post ID mismatch or missing. Check if JSON contains ProjectPost Primary Key");
 
@@ -66,7 +67,7 @@ namespace OicarWebApi.Controllers
                 await _context.SaveChangesAsync();
                 return NoContent();
             }
-            catch
+            catch(Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
                 "Error updating data");

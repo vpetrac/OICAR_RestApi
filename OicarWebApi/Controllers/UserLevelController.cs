@@ -76,14 +76,15 @@ namespace OicarWebApi.Controllers
 
             try
             {
+
                 if (id != userLevel.IduserLevel)
                     return BadRequest("UserLevel ID mismatch");
-
+                /*
                 var userLevelToUpdate = await _context.UserLevels.FindAsync(id);
 
                 if (userLevelToUpdate == null)
                     return NotFound($"UserLevel with Id = {id} not found");
-
+                */
                 _context.UserLevels.Update(userLevel);
                 await _context.SaveChangesAsync();
                 return NoContent();

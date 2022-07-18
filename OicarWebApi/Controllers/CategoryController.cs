@@ -58,7 +58,7 @@ namespace OicarWebApi.Controllers
 
         // PUT api/<CategoryController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(Category category)
+        public async Task<IActionResult> Put(int id,Category category)
         {
             _context.Categories.Update(category);
             await _context.SaveChangesAsync();
