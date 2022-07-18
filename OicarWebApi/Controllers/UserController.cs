@@ -74,10 +74,10 @@ namespace OicarWebApi.Controllers
                 if (id != user.IdappUser)
                     return BadRequest("AppUser ID mismatch");
 
-                var userToUpdate = await _context.AppUsers.FindAsync(id);
+                /*var userToUpdate = await _context.AppUsers.FindAsync(id);
 
                 if (userToUpdate == null)
-                    return NotFound($"User with Id = {id} not found");
+                    return NotFound($"User with Id = {id} not found");*/
 
                 _context.AppUsers.Update(user);
                 await _context.SaveChangesAsync();
@@ -86,7 +86,7 @@ namespace OicarWebApi.Controllers
             }
             catch (Exception)
             {
-                return BadRequest("AppUser ID mismatch or missing. Check if JSON contains User Primary Key");
+                return BadRequest("Server Error. User missing or wrong json.");
             }
         }
 
