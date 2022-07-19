@@ -26,8 +26,8 @@ namespace OicarWebApi_Tests
             
             var result = _controller.Get();
             var viewResult = Assert.IsType<ViewResult>(result);
-            var employees = Assert.IsType<List<AppUser>>(viewResult.Model);
-            Assert.Equal(2, employees.Count);
+            var users = Assert.IsType<List<AppUser>>(viewResult.Model);
+            Assert.NotEmpty(users);
         }
     }
 
